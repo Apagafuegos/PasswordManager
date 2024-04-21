@@ -12,7 +12,7 @@ public class UserDao extends DBDao {
      *
      * @param username, String of the name of the user (UNIQUE, PK).
      * @return User from DB.
-     * @throws NoSuchUserException, in case the provided username isn't contained in the DB.
+     * @throws NoSuchUserException, in case the provided username is not contained in the DB.
      */
     public User getUser(String username) throws NoSuchUserException {
         User user = null;

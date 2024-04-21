@@ -8,12 +8,19 @@ public class Password {
     private String password;
     private String servicio;
 
+    /**
+     * Only constructor of Password class.
+     *
+     * @param userName String containing the username of the password.
+     * @param password String containing the password for the service.
+     * @param servicio String containing the name of the service.
+     */
     public Password(String userName, String password, String servicio) {
         this.userName = userName;
         this.password = password;
         this.servicio = servicio.toUpperCase();
     }
-
+    /*Getters and setters*/
     public String getServicio() {
         return servicio;
     }
@@ -30,6 +37,15 @@ public class Password {
         this.userName = userName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    /*END OF GETTERS AND SETTERS*/
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,14 +57,6 @@ public class Password {
     @Override
     public int hashCode() {
         return Objects.hash(userName, servicio);
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override

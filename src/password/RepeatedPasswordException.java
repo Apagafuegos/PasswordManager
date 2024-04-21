@@ -1,6 +1,9 @@
 package password;
 
 public class RepeatedPasswordException extends Exception {
+    /**
+     * Exception for when it already exists a password-username for a service.
+     */
     public RepeatedPasswordException() {
     }
 

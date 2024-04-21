@@ -1,6 +1,9 @@
 package user;
 
 public class NoSuchUserException extends Exception {
+    /**
+     * Exception used when an unknown user (not contained in DB) is introduced.
+     */
     public NoSuchUserException() {
     }
 

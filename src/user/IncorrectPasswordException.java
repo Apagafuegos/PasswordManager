@@ -1,6 +1,9 @@
 package user;
 
 public class IncorrectPasswordException extends Exception {
+    /**
+     * Exception used when the introduced password is incorrect (it is not the once set up when the creation of the user).
+     */
     public IncorrectPasswordException() {
     }
 

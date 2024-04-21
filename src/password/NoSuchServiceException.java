@@ -1,6 +1,9 @@
 package password;
 
 public class NoSuchServiceException extends Exception {
+    /**
+     * Exception used when it does not exist a password for the introduced service.
+     */
     public NoSuchServiceException() {
     }
 

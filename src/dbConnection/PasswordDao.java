@@ -18,6 +18,12 @@ public class PasswordDao extends DBDao {
     private static final UserDao UDAO = new UserDao(); //Class atribute to generate the user whose username has been introduced
     private User usuario;
 
+    /**
+     * Only constructor for PasswordDao.
+     * Username needed for the connection to the database with all the data from said user.
+     *
+     * @param usuario String containing the username.
+     */
     public PasswordDao(String usuario) {
         try {
             this.usuario = UDAO.getUser(usuario);
@@ -26,6 +32,11 @@ public class PasswordDao extends DBDao {
         }
     }
 
+    /**
+     * Setter of the class' user.
+     *
+     * @param usuario User object.
+     */
     public void setUsuario(User usuario) {
         this.usuario = usuario;
     }
@@ -54,7 +65,7 @@ public class PasswordDao extends DBDao {
             }
 
         } catch (SQLException e) {
-            throw new NoSuchUserException("Usuario no encontrado");
+            throw new NoSuchUserException("Usuario not found");
         }
 
         return listPassword;

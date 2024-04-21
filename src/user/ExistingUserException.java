@@ -1,6 +1,9 @@
 package user;
 
 public class ExistingUserException extends Exception {
+    /**
+     * Exception used when it already exists a user with the introduced username (used when creating a new account).
+     */
     public ExistingUserException() {
     }
 
