@@ -3,6 +3,7 @@ import user.*;
 import dbConnection.*;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -63,7 +64,11 @@ public class App {
 
     public void menu(PasswordDao pdao) {
         try {
-            System.out.println(pdao.getAllPasswords());
+            List<Password> listAllPasswords = pdao.getAllPasswords();
+            if(!listAllPasswords.isEmpty())
+                System.out.println(pdao.getAllPasswords());
+            else
+                System.err.println("You got no passwords at this moment");
         } catch (NoSuchUserException e) {
             System.out.println(e.getMessage());
         }
