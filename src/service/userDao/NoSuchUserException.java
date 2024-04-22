@@ -1,4 +1,4 @@
-package user;
+package service.userDao;
 
 public class NoSuchUserException extends Exception {
     /**

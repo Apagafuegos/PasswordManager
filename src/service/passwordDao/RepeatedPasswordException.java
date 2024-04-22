@@ -1,4 +1,4 @@
-package password;
+package service.passwordDao;
 
 public class RepeatedPasswordException extends Exception {
     /**

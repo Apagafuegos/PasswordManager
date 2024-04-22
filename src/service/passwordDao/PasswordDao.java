@@ -1,16 +1,14 @@
-package dbConnection;
+package service.passwordDao;
 
 import org.jetbrains.annotations.NotNull;
-import password.NoSuchServiceException;
-import password.Password;
-import password.RepeatedPasswordException;
-import user.NoSuchUserException;
-
+import model.Password;
+import service.DBDao;
+import service.userDao.UserDao;
+import service.userDao.NoSuchUserException;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
-
-import user.User;
+import model.User;
 
 public class PasswordDao extends DBDao {
 
@@ -45,9 +43,9 @@ public class PasswordDao extends DBDao {
      * Generates a list of all the passwords contained in the DB of the introduced user.
      *
      * @return List of the passwords contained in the system by said user.
-     * @throws NoSuchUserException case in which said user does not exist.
+     * @throws NoPasswordsException case in which said user does not have any passwords.
      */
-    public List<Password> getAllPasswords() throws NoSuchUserException {
+    public List<Password> getAllPasswords() throws NoPasswordsException {
         List<Password> listPassword = new ArrayList<>();
         String sql = "select * from passwords where idUsuario = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -65,23 +63,26 @@ public class PasswordDao extends DBDao {
             }
 
         } catch (SQLException e) {
-            throw new NoSuchUserException("Usuario not found");
+            System.err.println(e.getMessage());
         }
+
+        if (listPassword.isEmpty())
+            throw new NoPasswordsException("This user does not have any password in the system");
 
         return listPassword;
     }
 
     /**
-     *  Gets all the passwords in the system corresponding to the introduced service.
+     * Gets all the passwords in the system corresponding to the introduced service.
      *
      * @param service String containing the name of the service to get the password-username
      * @return List containing username-password for said service
      * @throws NoSuchServiceException in case it does not exist a service with said name
-     * @throws NoSuchUserException in case the specified user does not exist
+     * @throws NoPasswordsException   in case the specified user does not have any passwords in the system
      */
-    public List<Password> getPassword(@NotNull String service) throws NoSuchServiceException, NoSuchUserException{
+    public List<Password> getPassword(@NotNull String service) throws NoSuchServiceException, NoPasswordsException {
         List<Password> aux = getAllPasswords().stream().filter(e -> e.getServicio().equals(service.toUpperCase())).toList();
-        if(!aux.isEmpty())
+        if (!aux.isEmpty())
             return aux;
         else
             throw new NoSuchServiceException("There are no passwords saved of that service");
@@ -92,24 +93,25 @@ public class PasswordDao extends DBDao {
      * Adds a new password (to be new has to have different usernames in the same service
      * and in case usernames are the same, different services) to the DB.
      *
-     * @param ps password to be introduced in the DB.
+     * @param ps password to be introduced in the DB. TODO: UPDATE JAVADOC
      * @return true if the password was sucessfully introduced, false otherwise.
+     * @throws RepeatedPasswordException in case the specified service-username already exists.
      */
-    public boolean newPassword(@NotNull Password ps) throws RepeatedPasswordException {
+    public boolean newPassword(String username, String password, String service) throws RepeatedPasswordException {
         String sql = "insert into passwords (idUsuario, usuario, password, servicio) values (?,?,?,upper(?))";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, usuario.getNombreUsuario());
-            stmt.setString(2, ps.getUserName());
-            stmt.setString(3, ps.getPassword());
-            stmt.setString(4, ps.getServicio().toUpperCase());
-            checkExistingPassword(ps);
+            stmt.setString(2, username);
+            stmt.setString(3, password);
+            stmt.setString(4, service.toUpperCase());
+            checkExistingPassword(new Password(username, password, service));
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next())
                 System.out.println(rs.getInt(1));
             return true;
 
-        } catch (SQLException | NoSuchUserException e) {
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             return false;
         }
@@ -140,10 +142,13 @@ public class PasswordDao extends DBDao {
      *
      * @param ps a Password.
      * @throws RepeatedPasswordException in case the password already exists.
-     * @throws NoSuchUserException in case the said user does not exist.
      */
-    private void checkExistingPassword(Password ps) throws RepeatedPasswordException, NoSuchUserException{
-        if(getAllPasswords().stream().anyMatch(e -> e.equals(ps)))
-            throw new RepeatedPasswordException("Username-service exists already in the system");
+    private void checkExistingPassword(Password ps) throws RepeatedPasswordException {
+        try {
+            if (getAllPasswords().stream().anyMatch(e -> e.equals(ps)))
+                throw new RepeatedPasswordException("Username-service exists already in the system");
+        } catch (NoPasswordsException ignored) {
+
+        }
     }
 }

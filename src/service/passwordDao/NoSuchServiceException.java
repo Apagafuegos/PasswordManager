@@ -1,4 +1,4 @@
-package password;
+package service.passwordDao;
 
 public class NoSuchServiceException extends Exception {
     /**

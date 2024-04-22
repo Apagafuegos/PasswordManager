@@ -1,7 +1,7 @@
-package other;
+package gui;
 
 import org.jetbrains.annotations.NotNull;
-import password.Password;
+import model.Password;
 
 import java.util.List;
 

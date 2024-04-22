@@ -1,10 +1,11 @@
-package dbConnection;
+package service.userDao;
 
-import user.ExistingUserException;
-import user.NoSuchUserException;
-import user.User;
+import service.DBDao;
+import model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDao extends DBDao {
     /**
@@ -34,6 +35,25 @@ public class UserDao extends DBDao {
         return user;
     }
 
+    public List<User> getAllUsers(){
+        String sql = "select * from users";
+        List<User> userList = new ArrayList<>();
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet set = stmt.executeQuery();
+            while (set.next()) {
+                String uname = set.getString("nombre_usuario");
+                String password = set.getString("password");
+                User user = new User(uname, password);
+                userList.add(user);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Not found");
+        }
+
+        return userList;
+    }
+
     /**
      * Creates a new user with the given Username and password.
      *
@@ -60,5 +80,23 @@ public class UserDao extends DBDao {
             System.err.println(e.getMessage());
             throw new ExistingUserException("This user already exists");
         }
+    }
+
+    public boolean userExists(String uname){
+        List<User> allUsers = getAllUsers();
+        return allUsers.stream().filter(e -> e.getNombreUsuario().equalsIgnoreCase(uname)).toList().isEmpty();
+    }
+
+    public User login(String username, String password) throws NoSuchUserException, IncorrectPasswordException {
+        User user = getUser(username);
+        if(user.getPassword().equals(password))
+            return user;
+        else
+            throw new IncorrectPasswordException("Incorrect password");
+    }
+
+    public User register(String username, String password) throws ExistingUserException {
+        newUser(username, password);
+        return (new User(username, password));
     }
 }

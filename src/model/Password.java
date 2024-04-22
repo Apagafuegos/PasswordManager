@@ -1,4 +1,4 @@
-package password;
+package model;
 
 import java.util.Objects;
 

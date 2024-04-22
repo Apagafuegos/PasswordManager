@@ -1,8 +1,7 @@
-package user;
+package model;
 
 public class User {
 
-    private int id;
     private String nombreUsuario;
     private String password;
 
@@ -36,8 +35,7 @@ public class User {
     /*END OF GETTERS AND SETTERS*/
     @Override
     public String toString() {
-        return "user.User{" +
-                "id=" + id +
+        return "model.User{" +
                 ", nombreUsuario='" + nombreUsuario + '\'' +
                 ", password='" + password + '\'' +
                 '}';
