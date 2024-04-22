@@ -1,5 +1,7 @@
 package gui;
 
+import model.User;
+import service.passwordDao.PasswordDao;
 import service.userDao.IncorrectPasswordException;
 import service.userDao.NoSuchUserException;
 import service.userDao.UserDao;
@@ -33,11 +35,13 @@ public class Login extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = usernameTextField.getText();
-                String password = Arrays.toString(passwordPasswordField.getPassword());
+                String password = new String(passwordPasswordField.getPassword());
 
                 try {
-                    udao.login(username, password);
+                    User user = udao.login(username, password);
                     JOptionPane.showMessageDialog(userPass, "Welcome back!");
+                    dispose();
+                    new Menu(new PasswordDao(user.getNombreUsuario()));
                 } catch (IncorrectPasswordException ex) {
                     JOptionPane.showMessageDialog(userPass, "Incorrect password");
                 } catch (NoSuchUserException ex) {

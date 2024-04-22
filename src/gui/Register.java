@@ -1,5 +1,7 @@
 package gui;
 
+import model.User;
+import service.passwordDao.PasswordDao;
 import service.userDao.ExistingUserException;
 import service.userDao.UserDao;
 
@@ -35,14 +37,16 @@ public class Register extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = usernameTextField.getText();
-                String password1 = Arrays.toString(passwordField.getPassword());
-                String password2 = Arrays.toString(passwordField2.getPassword());
+                String password1 = new String(passwordField.getPassword());
+                String password2 = new String(passwordField2.getPassword());
                 if (!password1.equals(password2)) {
                     JOptionPane.showMessageDialog(userPass, "Passwords do not match");
                 } else {
                     try {
-                        udao.register(username, password1);
+                        User user = udao.register(username, password1);
                         JOptionPane.showMessageDialog(userPass, "Welcome to our service!");
+                        dispose();
+                        new Menu(new PasswordDao(user.getNombreUsuario()));
                     } catch (ExistingUserException ex) {
                         JOptionPane.showMessageDialog(userPass, "This user already exists");
                     }

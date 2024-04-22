@@ -18,6 +18,8 @@ public class UserDao extends DBDao {
     public User getUser(String username) throws NoSuchUserException {
         User user = null;
         String sql = "select * from users where nombre_usuario = ?";
+        if(!userExists(username))
+            throw new NoSuchUserException("Usuario no encontrado");
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet set = stmt.executeQuery();
@@ -29,7 +31,6 @@ public class UserDao extends DBDao {
 
         } catch (SQLException e) {
             System.out.println("No encontrado");
-            throw new NoSuchUserException("Usuario no encontrado");
         }
 
         return user;
@@ -64,6 +65,9 @@ public class UserDao extends DBDao {
      */
     public boolean newUser(String username, String password) throws ExistingUserException {
         String sql = "insert into users(nombre_usuario, password) values(?,?)";
+        if(userExists(username)){
+            throw new ExistingUserException("This user already exists");
+        }
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -78,13 +82,17 @@ public class UserDao extends DBDao {
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new ExistingUserException("This user already exists");
+            throw new ExistingUserException("There was a problem creating the user");
         }
     }
 
     public boolean userExists(String uname){
         List<User> allUsers = getAllUsers();
-        return allUsers.stream().filter(e -> e.getNombreUsuario().equalsIgnoreCase(uname)).toList().isEmpty();
+//        for (User user : allUsers){
+//            if(user.getNombreUsuario().equalsIgnoreCase(uname))
+//                return true;
+//        }
+        return allUsers.stream().anyMatch(e -> e.getNombreUsuario().equalsIgnoreCase(uname));
     }
 
     public User login(String username, String password) throws NoSuchUserException, IncorrectPasswordException {
