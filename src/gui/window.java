@@ -1,7 +1,7 @@
 package gui;
 
 import javax.swing.*;
-import ;import other.App;
+import other.App;
 
 public class window extends JFrame {
     private JPanel panel1;
