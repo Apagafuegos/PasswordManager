@@ -1,3 +1,5 @@
+package other;
+
 import org.jetbrains.annotations.NotNull;
 import password.Password;
 

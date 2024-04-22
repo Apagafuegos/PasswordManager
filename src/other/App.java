@@ -1,3 +1,5 @@
+package other;
+
 import org.jetbrains.annotations.NotNull;
 import password.*;
 import user.*;
@@ -29,10 +31,9 @@ public class App {
      * @throws IncorrectPasswordException in case the password for the user is introduced incorrectly 3 times.
      * @throws NoSuchUserException in case the user does not exist.
      */
-    public PasswordDao logIn() throws IncorrectPasswordException, NoSuchUserException {
-        System.out.println(">Introduce your username and password");
-        System.out.print("\t>Username: ");
-        String username = SC.nextLine();
+    public PasswordDao logIn(String username) throws IncorrectPasswordException, NoSuchUserException {
+        /*System.out.println(">Introduce your username and password");
+        System.out.print("\t>Username: ");*/
         String password = "";
         User user = null;
         user = UDAO.getUser(username);
@@ -147,7 +148,7 @@ public class App {
 
         if (opt == 1) {
             try {
-                menu(logIn());
+                menu(logIn("aa"));
             } catch (IncorrectPasswordException | NoSuchUserException e) {
                 GUI.getMessage(e);
             }
