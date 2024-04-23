@@ -19,7 +19,7 @@ public class UserDao extends DBDao {
         User user = null;
         String sql = "select * from users where nombre_usuario = ?";
         if(!userExists(username))
-            throw new NoSuchUserException("Usuario no encontrado");
+            throw new NoSuchUserException("User not found");
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet set = stmt.executeQuery();
@@ -30,12 +30,17 @@ public class UserDao extends DBDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("No encontrado");
+            System.out.println("Not found");
         }
 
         return user;
     }
 
+    /**
+     * Method that generates a list of all the users in the database.
+     *
+     * @return a List containing all the users.
+     */
     public List<User> getAllUsers(){
         String sql = "select * from users";
         List<User> userList = new ArrayList<>();
@@ -86,15 +91,28 @@ public class UserDao extends DBDao {
         }
     }
 
+    /**
+     * Method to check if a user exists in the database.
+     *
+     * @param uname String containing the username
+     * @return true if it exists, false otherwise.
+     */
     public boolean userExists(String uname){
         List<User> allUsers = getAllUsers();
-//        for (User user : allUsers){
-//            if(user.getNombreUsuario().equalsIgnoreCase(uname))
-//                return true;
-//        }
         return allUsers.stream().anyMatch(e -> e.getNombreUsuario().equalsIgnoreCase(uname));
     }
 
+    /**
+     * Method to log in into an existing account.
+     * Checks if the introduced password is correct.
+     * Made for an easier implementation in {@link gui.Login}
+     *
+     * @param username String that contains the username.
+     * @param password String that contains the password.
+     * @return a stance of the newly logged User
+     * @throws NoSuchUserException in case said user does not exist.
+     * @throws IncorrectPasswordException in case the password introduced is incorrect.
+     */
     public User login(String username, String password) throws NoSuchUserException, IncorrectPasswordException {
         User user = getUser(username);
         if(user.getPassword().equals(password))
@@ -103,6 +121,15 @@ public class UserDao extends DBDao {
             throw new IncorrectPasswordException("Incorrect password");
     }
 
+    /**
+     * Method that inserts a new user into the DB.
+     * Made for an easier implementation in {@link gui.Register}
+     *
+     * @param username String that contains the username.
+     * @param password String that contains the password.
+     * @return a stance of the newly introduced User.
+     * @throws ExistingUserException in case the user already exists.
+     */
     public User register(String username, String password) throws ExistingUserException {
         newUser(username, password);
         return (new User(username, password));

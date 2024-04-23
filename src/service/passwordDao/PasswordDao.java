@@ -92,10 +92,14 @@ public class PasswordDao extends DBDao {
     /**
      * Adds a new password (to be new has to have different usernames in the same service
      * and in case usernames are the same, different services) to the DB.
+     * Implements the later defined {@link #checkExistingPassword(Password)} method to
+     * check if the password already exists.
      *
-     * @param ps password to be introduced in the DB. TODO: UPDATE JAVADOC
-     * @return true if the password was sucessfully introduced, false otherwise.
-     * @throws RepeatedPasswordException in case the specified service-username already exists.
+     * @param username String contaning the username.
+     * @param password String contaning the password.
+     * @param service String contaning the service.
+     * @return true if it could be created, false otherwise.
+     * @throws RepeatedPasswordException in case the password already exists.
      */
     public boolean newPassword(String username, String password, String service) throws RepeatedPasswordException {
         String sql = "insert into passwords (idUsuario, usuario, password, servicio) values (?,?,?,upper(?))";
@@ -118,9 +122,12 @@ public class PasswordDao extends DBDao {
     }
 
     /**
-     * @param newPassword string containing the new password for the service.
-     * @param servicio    string containing the name for the service to change the password.
+     * Method that updates the password for a unique username-service.
+     *
+     * @param newPassword String containing the new password.
+     * @param servicio String containing the name of the service.
      * @return true if it could be changed, false otherwise.
+     * @throws NoSuchServiceException in case the server does not exist.
      */
     public boolean updatePassword(String newPassword, @NotNull String servicio) throws NoSuchServiceException {
         String sql = "update passwords set password = ? where idUsuario = ? and servicio = upper(?)";
@@ -137,6 +144,17 @@ public class PasswordDao extends DBDao {
         }
     }
 
+    /**
+     * Method that deletes a password (service-username-password) from the DB.
+     *
+     * @param service String containing the service.
+     * @param username String containing the username
+     * @param password String containing the password (needed for filtering through all the passwords, as default constructor
+     *                 of password class needs it).
+     * @return true if it could be deleted, false otherwise.
+     * @throws NoPasswordsException in case the user does not have any password.
+     * @throws NoSuchServiceException in case said service does not exist.
+     */
     public boolean deletePassword(String service, String username, String password) throws NoPasswordsException, NoSuchServiceException {
         if(getAllPasswords().stream().anyMatch(e -> e.equals(new Password(username, password, service)))){
             String sql = "delete from passwords where id = (select id from passwords where idUsuario = ? and servicio = ? and usuario = ?)";
@@ -152,7 +170,6 @@ public class PasswordDao extends DBDao {
                 throw new NoSuchServiceException("Said service does not exist");
             }
         }
-
         return false;
     }
 

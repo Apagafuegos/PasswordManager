@@ -20,7 +20,7 @@ public class DBDao {
             return DriverManager.getConnection(url, user, password);
 
         } catch (Exception e) {
-            System.err.println("No se ha podido conectar a la BBDD" + e.getMessage());
+            System.err.println("No se ha podido conectar a la BBDD " + e.getMessage());
             e.getStackTrace();
             throw new RuntimeException("No se pudo conectar a la BBDD");
         }

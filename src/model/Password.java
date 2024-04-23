@@ -46,6 +46,13 @@ public class Password {
     }
     /*END OF GETTERS AND SETTERS*/
 
+    /**
+     * Override of the {@link Object} equals.
+     * Two passwords are considered equal if their usernames
+     * and their services(ignoring capitalisation) are the same.
+     * @param o an Object
+     * @return true if both passwords are equal, false if they are not or they are another class type.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
