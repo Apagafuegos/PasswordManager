@@ -22,6 +22,8 @@ public class Menu extends JFrame {
     private JButton updateButton;
     private JLabel yourPasswords;
     private JScrollPane listContainer;
+    private JToolBar optionsToolBar;
+    private JButton loginOptionButton;
     private final String[] columns;
     private final String[][] data;
 
@@ -119,27 +121,35 @@ public class Menu extends JFrame {
                 panel.add(new JLabel("New password:"));
                 panel.add(passwordField);
                 int result = JOptionPane.showConfirmDialog(null, panel, "Updating password",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE); //To insert the new password
                 if (result == JOptionPane.OK_OPTION){
-                    int selectedRow = table.getSelectedRow();
+                    int selectedRow = table.getSelectedRow(); //Takes the selected row of the password to update
                     if (selectedRow != -1){
                         updatedRow = new String[table.getColumnCount()];
                         for (int i = 0; i < table.getColumnCount(); i++) {
                             updatedRow[i] = (String) table.getValueAt(selectedRow, i);
                             if(i == 2){
-                                updatedRow[i] = passwordField.getText();
+                                updatedRow[i] = passwordField.getText(); //Uses the new password value to fill the array
                             }
                         }
                         model.removeRow(selectedRow);
                         model.addRow(updatedRow);
                         try {
                             pdao.updatePassword(passwordField.getText(), updatedRow[0]);
+                            //Updates the password with the new password and the service
                         } catch (NoSuchServiceException ex) {
                             JOptionPane.showMessageDialog(panel1, ex.getMessage());
                         }
                     }
                 }
 
+            }
+        });
+        loginOptionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new Login();
             }
         });
     }
