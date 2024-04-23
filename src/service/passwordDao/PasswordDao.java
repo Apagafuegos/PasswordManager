@@ -137,6 +137,25 @@ public class PasswordDao extends DBDao {
         }
     }
 
+    public boolean deletePassword(String service, String username, String password) throws NoPasswordsException, NoSuchServiceException {
+        if(getAllPasswords().stream().anyMatch(e -> e.equals(new Password(username, password, service)))){
+            String sql = "delete from passwords where id = (select id from passwords where idUsuario = ? and servicio = ? and usuario = ?)";
+            try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, usuario.getNombreUsuario());
+                stmt.setString(2, service.toUpperCase());
+                stmt.setString(3, username);
+                stmt.executeUpdate();
+                return true;
+
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                throw new NoSuchServiceException("Said service does not exist");
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Checks if already exists a password for the same service and with the same username.
      *
