@@ -1,3 +1,4 @@
-Password manager done in Java
+Password manager done in Java.
 
-!!WORK IN PROGRESS!!
+Used mysql-connector-j-8.3.0 as driver for the database.
+

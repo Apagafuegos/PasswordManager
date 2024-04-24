@@ -4,11 +4,9 @@ import model.User;
 import service.passwordDao.PasswordDao;
 import service.userDao.ExistingUserException;
 import service.userDao.UserDao;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 public class Register extends JFrame {
 
@@ -69,10 +67,4 @@ public class Register extends JFrame {
             }
         });
     }
-
-    public static void main(String[] args) {
-        new Register();
-    }
-
-
 }
