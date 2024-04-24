@@ -6,7 +6,6 @@ import service.passwordDao.NoPasswordsException;
 import service.passwordDao.NoSuchServiceException;
 import service.passwordDao.PasswordDao;
 import service.passwordDao.RepeatedPasswordException;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
